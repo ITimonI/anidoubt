@@ -1,0 +1,29 @@
+@media (max-width: 680px) {
+    #btn-mobile-menu {
+        display: block;
+    }
+
+    header {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #title-menu {
+        display: flex;
+        width: 90%;
+        justify-content: space-between;
+        align-items: center;
+        
+    }
+
+    #nav-items {
+        display: none;
+        font-size: 1.2em;
+    }
+
+    #nav-items.visible{
+        margin-top: 1em;
+        display: flex;
+        flex-direction: column;
+    }
+}
