@@ -1,34 +1,16 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount } from 'svelte';
   import animalData from "./assets/data/animaldata.js";
-  import Card from "./components/Card.svelte";
-  import Sortable from "sortablejs";
+  import PlayerStack from "./components/PlayerStack.svelte";
+  import DropStack from "./components/DropStack.svelte";
 
-  let playerStack;
-  let dropStack;
-
-  let playerCards = [...animalData]; // Initialize with all cards
-  let dropCards = []; // Initialize as empty
-
-  onMount(() => {
-    new Sortable(playerStack, {
-      group: "shared",
-      animation: 150,
-      onEnd: (evt) => {updateStacks(evt)},
-    });
-
-    new Sortable(dropStack, {
-      group: "shared",
-      animation: 150,
-      onEnd: (evt) => {updateStacks(evt)},
-    });
-  });
+  let playerCards = [...animalData];
+  let dropCards = [];
 
   function updateStacks(evt) {
-    // Update stacks after drag-and-drop
-    if (evt.from === playerStack) {
+    if (evt.from.id === 'player-stack') {
       dropCards.push(...playerCards.splice(evt.oldIndex, 1));
-    } else if (evt.from === dropStack) {
+    } else if (evt.from.id === 'drop-stack') {
       playerCards.push(...dropCards.splice(evt.oldIndex, 1));
     }
   }
@@ -38,7 +20,6 @@
   <header>
     <div id="title-menu">
       <h1 id="site-title">Anistack</h1>
-      <!-- <button id="btn-mobile-menu" onclick="handleBtnMobileMenuPress()"><img src="images/icons/menu.svg" alt="M"></button> -->
     </div>
 
     <nav id="nav-menu">
@@ -52,16 +33,8 @@
   <main>
     <div class="wrapper">
       <div id="game">
-        <div id="player-stack" bind:this={playerStack}>
-          {#each playerCards as animal}
-            <Card {animal} />
-          {/each}
-        </div>
-        <div id="drop-stack" bind:this={dropStack}>
-          {#each dropCards as animal}
-            <Card {animal} />
-          {/each}
-        </div>
+        <PlayerStack {playerCards} on:update={updateStacks} />
+        <DropStack {dropCards} on:update={updateStacks} />
       </div>
     </div>
   </main>
@@ -76,11 +49,5 @@
     display: flex;
     flex-direction: row;
     gap: 1em;
-  }
-
-  #drop-stack {
-    min-width: 20em; /* Adjust this value to match the width of a card */
-    min-height: 100%; /* Adjust this value to match the height of a card */
-    border: 1px dashed #000000; /* Optional: Add a border to visualize the drop area */
   }
 </style>
