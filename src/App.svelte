@@ -1,8 +1,17 @@
 <script>
+  import Router from "svelte-spa-router";
   import { onMount } from "svelte";
   import animalData from "./assets/data/animaldata.js";
   import Card from "./components/Card.svelte";
   import Sortable from "sortablejs";
+  import Home from "./routes/Home.svelte";
+  import About from "./routes/About.svelte";
+
+
+  const routes = {
+    "/": Home,
+    "/about": About,
+  };
 
   let playerStack;
   let dropStack;
@@ -34,7 +43,7 @@
   }
 </script>
 
-<main>
+<div>
   <header>
     <div id="title-menu">
       <h1 id="site-title">Anistack</h1>
@@ -43,13 +52,14 @@
 
     <nav id="nav-menu">
       <ul id="nav-items">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
+        <li><a href="#/">Home</a></li>
+        <li><a href="#/about">About</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
   </header>
   <main>
+    <Router {routes}/>
     <div class="wrapper">
       <div id="game">
         <div id="player-stack" bind:this={playerStack}>
@@ -69,7 +79,7 @@
     <p>&copy; 2024 Timon Czarny</p>
     <a href="#imprint">Impressum</a>
   </footer>
-</main>
+</div>
 
 <style>
   #game {
