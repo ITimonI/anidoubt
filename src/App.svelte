@@ -3,11 +3,13 @@
   import Home from "./routes/Home.svelte";
   import About from "./routes/About.svelte";
   import Game from "./routes/Game.svelte";
+  import LegacyGame from "./routes/Legacy_Game.svelte";
 
   const routes = {
     "/": Home,
     "/about": About,
     "/game": Game,
+    "/legacy": LegacyGame,
   };
 </script>
 
@@ -23,6 +25,7 @@
         <li><a href="#/">Home</a></li>
         <li><a href="#contact">Contact</a></li>
         <li><a href="#/game">Game</a></li>
+        <li><a href="#/legacy">LegacyGame</a></li>
       </ul>
     </nav>
   </header>
