@@ -1,7 +1,6 @@
 <script>
     export let animal;
     export let showProperty = false;
-    export let context = "default";
 
     const animalTag = animal.group.toLowerCase() + animal.group_number;
     const groupClass = "group-" + animal.group.toLowerCase();
@@ -19,7 +18,6 @@
         src="images/quartet-images/{animalTag}.jpg"
         alt=""
     />
-    <p class="card-trivia">{context}</p>
     
     {#if showProperty}
         <p class="card-title-text">{animal.max_weight}</p>

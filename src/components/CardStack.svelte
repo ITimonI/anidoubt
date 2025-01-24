@@ -12,6 +12,18 @@
     function handleSort(e) {
         items = e.detail.items;
     }
+
+    export function checkOrder(property) {
+        let orderIsCorrect = true;
+        let sorted = items.slice().sort((a, b) => b[property] - a[property]);
+        for (let i = 0; i < items.length; i++) {
+            if (items[i] !== sorted[i]) {
+                orderIsCorrect = false;
+            }
+        }
+        console.log(orderIsCorrect);
+        return orderIsCorrect;
+    }
 </script>
 
 <section
