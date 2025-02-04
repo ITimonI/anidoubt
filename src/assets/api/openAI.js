@@ -1,7 +1,8 @@
 import OpenAI from "openai";
 import { OPEN_AI_API_KEY } from "../../config";
 
-let difficulty = "dad";
+let difficulty = "hard";
+let property = "weight";
 
 let aiCards = [
     { id: 3, animalName: "Monkey" },
@@ -13,20 +14,19 @@ let messages = [];
 messages.push(
     {
         role: "system",
-        content: `You are an AI playing a card game. Here are the rules:
-        - There are cards with animals on them, each with properties like weight, height, and speed.
-        - Cards are arranged in a specific order based on one property (e.g., weight).
-        - Each turn, a player or AI places one card into the correct position within the stack.
-        - If someone doubts that the order is correct, they can call "check order".
-          - If the order is correct, the doubter draws 2 penalty cards.
-          - If the order is incorrect, their opponent draws 4 penalty cards.
-        - You should also tell a message about your move.
-        - You play as an AI opponent and can play at different difficulty levels:
-          - Baby: Makes random or simple decisions.
-          - Dad: Makes moderately informed decisions.
-          - Grandpa: Makes strategic and advanced decisions.
-        - Today you are playing as a ${JSON.stringify(difficulty)}!
-        - You have the following cards in your card stack to play with: ${JSON.stringify(aiCards)}`,
+        content: `
+        You are an AI playing a card game. Rules:
+        - Add animal cards descending by ${JSON.stringify(property)}
+        - Each turn, place one card in the correct position in the stack
+        - Your opponent also adds cards
+        - You can't change the order of the already placed cards
+        - If you doubt the order set orderIsCorrect to false, else true
+        - If correct, doubter draws 2 penalty cards
+        - If incorrect, opponent draws 4 penalty cards
+        - Add a message explaining your move.
+        - Difficulty on a scale from 1-10, 1: baby to 10: expert ${JSON.stringify(difficulty)}.
+        - Your cards: ${JSON.stringify(aiCards)}.
+        `,
     }
 )
 
@@ -43,9 +43,9 @@ export function testApi() {
     ];
 
     sendMessage(`
-        The player made made a move. Where should your next card go?
-        - The order of the already dropped cards is ${JSON.stringify(dropCards)}
-        - The cards available to you to play with are ${JSON.stringify(aiCards)}
+        Where should your next card go?
+        - Cards on the table ${JSON.stringify(dropCards)}
+        - Cards in your stack ${JSON.stringify(aiCards)}
         `);
 }
 
@@ -55,7 +55,7 @@ export async function sendMessage(content) {
 
     try {
         const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
             messages: messages,
             response_format: {
                 type: "json_schema",
@@ -67,18 +67,18 @@ export async function sendMessage(content) {
                         "properties": {
                             "position": {
                                 "type": "integer",
-                                "description": "The index in the array where the card should be placed."
+                                "description": "index where the card should be placed at"
                             },
                             "card": {
                                 "type": "object",
                                 "properties": {
                                     "id": {
                                         "type": "integer",
-                                        "description": "The unique identifier of the card."
+                                        "description": "id of the card"
                                     },
                                     "name": {
                                         "type": "string",
-                                        "description": "The name of the animal on the card (e.g., 'Penguin')."
+                                        "description": "animal name"
                                     }
                                 },
                                 "required": ["id", "name"],
@@ -86,10 +86,14 @@ export async function sendMessage(content) {
                             },
                             "message": {
                                 "type": "string",
-                                "description": "A custom message commenting on the move."
+                                "description": "Commenting on your move."
+                            },
+                            "orderIsCorrect": {
+                                "type": "boolean",
+                                "description": "set this to false if you doubt the order"
                             }
                         },
-                        "required": ["position", "card", "message"],
+                        "required": ["position", "card", "message", "orderIsCorrect"],
                         "additionalProperties": false
                     },
                 },
