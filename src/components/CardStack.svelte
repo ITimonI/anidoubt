@@ -7,10 +7,18 @@
     export let items = [];
     // export let displayProp = false;
 
+    export let type = "";
     export let showProperty = false;
+    export let onUpdateCards;
 
     function handleSort(e) {
         items = e.detail.items;
+        
+    }
+
+    function handleFinalize(e){
+        items = e.detail.items;
+        onUpdateCards(type, items);
     }
 
     export function checkOrder(property) {
@@ -30,7 +38,7 @@
     id="drop-stack"
     use:dndzone={{ items, flipDurationMs }}
     on:consider={handleSort}
-    on:finalize={handleSort}
+    on:finalize={handleFinalize}
 >
     {#each items as item (item.id)}
         <div animate:flip={{ duration: flipDurationMs }}>

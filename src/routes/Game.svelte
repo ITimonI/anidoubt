@@ -31,6 +31,21 @@
     function handleCheck() {
         showProperty = !showProperty;
         dropCardStackRef.checkOrder("max_weight");
+
+    }
+
+    function onUpdateCards(type, items){
+        switch (type) {
+            case "player":
+                playerCards = items;
+                break;
+            case "drop":
+                dropCards = items;
+                break;
+            default:
+                console.warn(`Unknown type: ${type}`);
+        }
+        console.log(dropCards);
     }
 
     function handleStart() {
@@ -58,8 +73,8 @@
     <button class="btn" id="btn-start" on:click={handlePlaceCard}>Play</button>
     <button class="btn" id="btn-check" on:click={handleCheck}>Check</button>
     <div id="game">
-        <CardStack items={playerCards}/>
-        <CardStack bind:this={dropCardStackRef} items={dropCards} showProperty={showProperty}/>
+        <CardStack type={"player"} items={playerCards} {onUpdateCards}/>
+        <CardStack type={"drop"} bind:this={dropCardStackRef} items={dropCards} {onUpdateCards} showProperty={showProperty}/>
     </div>
 </div>
 
