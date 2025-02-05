@@ -197,60 +197,136 @@
 </script>
 
 <div class="wrapper">
-    <button class="btn" id="btn-start" on:click={handlePlayerPlacedCard}>
-        Play
-    </button>
-    {#if !showProperty}
-        <button
-            class="btn"
-            id="btn-check"
-            on:click={() => handleCheck(currentTurn)}
-        >
-            Check
-        </button>
-    {/if}
-
-    <div id="ai-messages">
-        <p>{currentAiMessage}</p>
-    </div>
-    {#if showProperty}
-        <button class="btn" id="btn-next" on:click={nextRound}
-            >Next Round</button
-        >
-    {/if}
-    {#if gameWon}
-        <button class="btn" id="btn-reset" on:click={resetGame}
-            >Reset Game</button
-        >
+    {#if opponentIsAI}
+        <div id="ai-messages">
+            <p>{currentAiMessage}</p>
+        </div>
     {/if}
     <div id="game">
-        <CardStack
-            type={"player"}
-            items={playerCards}
-            {onUpdateCards}
-            yourTurn={currentTurn === "player"}
-        />
-        <CardStack
-            type={"drop"}
-            bind:this={dropCardStackRef}
-            items={dropCards}
-            {onUpdateCards}
-            {showProperty}
-        />
-        <CardStack
-            type={"opponent"}
-            items={opponentCards}
-            {onUpdateCards}
-            yourTurn={currentTurn === "opponent"}
-        />
+        <div id="player-stack">
+            <CardStack
+                type={"player"}
+                items={playerCards}
+                {onUpdateCards}
+                yourTurn={currentTurn === "player"}
+            />
+        </div>
+
+        <div id="drop-stack">
+            <CardStack
+                type={"drop"}
+                bind:this={dropCardStackRef}
+                items={dropCards}
+                {onUpdateCards}
+                {showProperty}
+            />
+        </div>
+        <div id="opponent-stack">
+            <CardStack
+                type={"opponent"}
+                items={opponentCards}
+                {onUpdateCards}
+                yourTurn={currentTurn === "opponent"}
+            />
+        </div>
+        <div class="game-area" id="player-area">
+            <h2>Player 1</h2>
+        </div>
+        <div class="game-area" id="drop-area">
+            {#if !showProperty}
+                <button
+                    class="btn"
+                    id="btn-check"
+                    on:click={() => handleCheck(currentTurn)}
+                >
+                    Check
+                </button>
+            {/if}
+            {#if showProperty}
+                <button class="btn" id="btn-next" on:click={nextRound}
+                    >Next Round</button
+                >
+            {/if}
+            {#if gameWon}
+                <button class="btn" id="btn-reset" on:click={resetGame}
+                    >Reset Game</button
+                >
+            {/if}
+            <h2>Table</h2>
+        </div>
+        <div class="game-area" id="opponent-area">
+            <h2>Player 2</h2>
+        </div>
     </div>
 </div>
 
 <style>
     #game {
+        display: grid;
+        grid-template-columns: 1fr 9fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        width: 90vw;
+        gap: 1em;
+        height: auto;
+        color: #000000;
+        margin-left: 1em;
+        margin-right: 2em;
+        grid-template-areas:
+            "opponent-area opponent-stack"
+            "drop-area drop-stack"
+            "player-area player-stack";
+    }
+
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+    }
+
+    #game button {
+        color: white;
+    }
+
+    #player-area {
+        grid-area: player-area;
+    }
+
+    #drop-area {
+        grid-area: drop-area;
+    }
+
+    #opponent-area {
+        grid-area: opponent-area;
+    }
+
+    #player-stack {
+        grid-area: player-stack;
+    }
+
+    #drop-stack {
+        grid-area: drop-stack;
+    }
+
+    #opponent-stack {
+        grid-area: opponent-stack;
+    }
+
+    .game-area {
+        min-height: 10em;
         display: flex;
         flex-direction: row;
+        justify-content: end;
+        align-items: center;
         gap: 1em;
+    }
+
+    .game-area h2 {
+        transform: rotate(270deg);
+        font-size: 24px;
     }
 
     .btn {

@@ -43,13 +43,14 @@
     on:finalize={handleFinalize}
 >
     {#each items as item (item.id)}
-        <div animate:flip={{ duration: flipDurationMs }}>
+        <div class="card" animate:flip={{ duration: flipDurationMs }}>
             <Card animal={item} {showProperty}/>
         </div>
     {/each}
 </section>
 
 <style>
+
     #drop {
         border: 2px dashed #000000;
         outline: none;
@@ -57,11 +58,12 @@
 
     .stack{
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: center;
         align-items: center;
+        gap: 1em;
         padding-top: 1em;
-        min-width: 20em; /* Adjust this value to match the width of a card */
-        min-height: 100%; /* Adjust this value to match the height of a card */
+        height: 100%;
         border-radius: 1em;
     }
 

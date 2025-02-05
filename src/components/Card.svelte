@@ -18,48 +18,89 @@
         src="images/quartet-images/{animalTag}.jpg"
         alt=""
     />
-    
+
     {#if showProperty}
         <p class="card-title-text">{animal.max_weight}</p>
     {:else}
-        <div class="card-trivia">{animal.trivia_german}</div>
+        <!-- <div class="card-trivia">{animal.trivia_german}</div> -->
     {/if}
-    <!-- <div class="card-stats">
-      <div class="card-stat">
-          <div>
-              <img src="images/icons/age.svg" alt="">
-          </div>
-          <div>{animal.max_age}</div>
-      </div>
-      <div class="card-stat">
-          <div>
-              <img src="images/icons/weight.svg" alt="">
-          </div>
-          <div>{animal.max_weight}</div>
-      </div>
-      <div class="card-stat">
-          <div>
-              <img src="images/icons/babies.svg" alt="">
-          </div>
-          <div>{animal.litter_size}</div>
-      </div>
-      <div class="card-stat">
-          <div>
-              <img src="images/icons/death.svg" alt="">
-          </div>
-          <div>{animal.deaths}</div>
-      </div>
-      <div class="card-stat">
-          <div>
-              <img src="images/icons/length.svg" alt="">
-          </div>
-          <div>{animal.max_length}</div>
-      </div>
-      <div class="card-stat">
-          <div>
-              <img src="images/icons/speed.svg" alt="">
-          </div>
-          <div>{animal.top_speed}</div>
-      </div>
-  </div> -->
 </div>
+
+<style>
+    .card {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--secondary);
+        width: 16em;
+        height: 16em;
+        border-radius: 1em;
+        overflow: hidden;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        margin-bottom: 1em;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+        transition: transform 0.5s;
+    }
+
+    .card-header {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        min-height: 3em;
+    }
+
+    .card-image {
+        width: 100%;
+        height: 18em;
+        object-fit: cover;
+    }
+
+    .card-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .card-stat {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 1em;
+        align-items: center;
+    }
+
+    .card-stat div {
+        display: flex;
+        justify-content: center;
+    }
+
+    .card-trivia {
+        display: flex;
+        justify-content: center;
+        padding: 1em;
+        font-weight: lighter;
+        padding-top: 2em;
+        padding-bottom: 2em;
+    }
+
+    .card-number {
+        display: flex;
+        color: white;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .card-title {
+        display: flex;
+        align-items: center;
+        background-color: var(--secondary);
+        color: var(--font-color);
+    }
+
+    .card-title-text {
+        text-transform: uppercase;
+        font-weight: 500;
+        padding-left: 0.5rem;
+        font-size: 1.2rem;
+    }
+</style>

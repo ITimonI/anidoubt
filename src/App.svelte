@@ -11,7 +11,7 @@
   };
 </script>
 
-<div>
+<div class="app">
   <header>
     <div id="title-menu">
       <h1 id="site-title">Anistack</h1>
@@ -36,7 +36,4 @@
 </div>
 
 <style>
-  footer {
-    margin-top: 1em;
-  }
 </style>
