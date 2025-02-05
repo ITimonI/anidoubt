@@ -36,5 +36,7 @@
 </div>
 
 <style>
-  
+  footer {
+    margin-top: 1em;
+  }
 </style>

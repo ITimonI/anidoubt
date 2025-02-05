@@ -4,7 +4,11 @@
     import Card from "../components/Card.svelte";
     import CardStack from "../components/CardStack.svelte";
     import { fetchAnimalData } from "../assets/api/animalDataAPI.js";
-    import { sendMessage, testApi, clearMessageQueue } from "../assets/api/openAI.js";
+    import {
+        sendMessage,
+        testApi,
+        clearMessageQueue,
+    } from "../assets/api/openAI.js";
 
     let showProperty = false;
     let allCards = [...animalData];
@@ -16,6 +20,8 @@
     let usedCards = [];
     let currentAiMessage = "";
     let gameWon = false;
+    let opponentIsAI = false;
+    let currentTurn = "player";
 
     startGame();
 
@@ -49,7 +55,8 @@
     }
 
     function handleCheck(initiator) {
-        showProperty = true
+        showProperty = true;
+        currentTurn = "incative";
 
         let otherPlayer;
         if (initiator === "player") {
@@ -61,14 +68,17 @@
         const orderIsCorrect = dropCardStackRef.checkOrder("max_weight");
         if (orderIsCorrect) {
             // add four cards to the initiators hand
+            console.log(`Adding four cards to ${initiator}`);
             addCardsToHand(4, initiator);
         } else {
             // add two cards to the otherPlayers hand
+            console.log(`Adding two cards to ${otherPlayer}`);
             addCardsToHand(2, otherPlayer);
         }
     }
 
     function nextRound() {
+        currentTurn = "player";
         // move all cards from the dropStack to usedCards
         usedCards.push(...dropCards);
         dropCards.length = 0; // This clears the dropCards array
@@ -95,8 +105,11 @@
     function onUpdateCards(type, items) {
         switch (type) {
             case "player":
-                playerCards = items;
-                checkWin(playerCards, "player");
+                if (items.length !== playerCards.length) {
+                    currentTurn = "opponent";
+                    playerCards = items;
+                    checkWin(playerCards, "player");
+                }
                 break;
             case "drop":
                 const newCard = items.find(
@@ -105,25 +118,29 @@
                 const newCardIndex = items.indexOf(newCard);
 
                 dropCards = items;
-                if(!gameWon) handlePlayerPlacedCard(newCard.name, newCardIndex);
+                if (!gameWon && opponentIsAI)
+                    handlePlayerPlacedCard(newCard.name, newCardIndex);
                 break;
             case "opponent":
-                opponentCards = items;
-                checkWin(opponentCards, "opponent");
+                if (items.length !== opponentCards.length) {
+                    currentTurn = "player";
+                    opponentCards = items;
+                    checkWin(opponentCards, "opponent");
+                }
                 break;
             default:
                 console.warn(`Unknown type: ${type}`);
         }
     }
 
-    function checkWin(array, type){
-        if(array.length === 0){
+    function checkWin(array, type) {
+        if (array.length === 0) {
             console.log(`The ${type} has won!`);
             gameWon = true;
         }
     }
 
-    function resetGame(){
+    function resetGame() {
         gameWon = false;
         clearMessageQueue();
         startGame();
@@ -184,22 +201,35 @@
         Play
     </button>
     {#if !showProperty}
-        <button class="btn" id="btn-check" on:click={() => handleCheck("player")}>
+        <button
+            class="btn"
+            id="btn-check"
+            on:click={() => handleCheck(currentTurn)}
+        >
             Check
         </button>
     {/if}
-    
+
     <div id="ai-messages">
         <p>{currentAiMessage}</p>
     </div>
     {#if showProperty}
-        <button class="btn" id="btn-next" on:click={nextRound}>Next Round</button>
+        <button class="btn" id="btn-next" on:click={nextRound}
+            >Next Round</button
+        >
     {/if}
     {#if gameWon}
-        <button class="btn" id="btn-reset" on:click={resetGame}>Reset Game</button>
+        <button class="btn" id="btn-reset" on:click={resetGame}
+            >Reset Game</button
+        >
     {/if}
     <div id="game">
-        <CardStack type={"player"} items={playerCards} {onUpdateCards} />
+        <CardStack
+            type={"player"}
+            items={playerCards}
+            {onUpdateCards}
+            yourTurn={currentTurn === "player"}
+        />
         <CardStack
             type={"drop"}
             bind:this={dropCardStackRef}
@@ -207,7 +237,12 @@
             {onUpdateCards}
             {showProperty}
         />
-        <CardStack type={"opponent"} items={opponentCards} {onUpdateCards} />
+        <CardStack
+            type={"opponent"}
+            items={opponentCards}
+            {onUpdateCards}
+            yourTurn={currentTurn === "opponent"}
+        />
     </div>
 </div>
 
