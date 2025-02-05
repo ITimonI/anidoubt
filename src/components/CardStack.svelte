@@ -59,11 +59,10 @@
     .stack{
         display: flex;
         flex-direction: row;
-        justify-content: center;
         align-items: center;
         gap: 1em;
         padding-top: 1em;
-        max-width: 50%;
+        max-width: 80vw;
         overflow-x: scroll;
         scrollbar-color: #848484 rgb(0,0,0,0);
         

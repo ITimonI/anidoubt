@@ -265,6 +265,7 @@
         display: grid;
         grid-template-columns: 1fr 9fr;
         grid-template-rows: 1fr 1fr 1fr;
+        padding: 1em;
         width: 90vw;
         gap: 1em;
         height: auto;
@@ -281,10 +282,9 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         height: 100vh;
         width: 100vw;
-        overflow: hidden;
+        overflow-x: hidden;
     }
 
     #game button {
