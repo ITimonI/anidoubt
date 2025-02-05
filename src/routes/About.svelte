@@ -13,5 +13,6 @@
     .about-container {
         padding: 20px;
         text-align: center;
+        color: black;
     }
 </style>

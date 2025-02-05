@@ -48,10 +48,10 @@
         allCards = shuffleArray([...animalData]);
 
         // Move four random cards from allCards to playerCards
-        playerCards = allCards.splice(0, 4);
+        playerCards = allCards.splice(0, 6);
 
         // Move another four random cards from allCards to opponentCards
-        opponentCards = allCards.splice(0, 4);
+        opponentCards = allCards.splice(0, 6);
     }
 
     function handleCheck(initiator) {
@@ -244,7 +244,7 @@
                     id="btn-check"
                     on:click={() => handleCheck(currentTurn)}
                 >
-                    Check
+                    Check order
                 </button>
             {/if}
             {#if showProperty}
@@ -257,9 +257,13 @@
                     >Reset Game</button
                 >
             {/if}
-            <h2>Table</h2>
+            <h2>Weight</h2>
         </div>
         <div class="game-area" id="opponent-area">
+            <label class="btn" id="enable-ai">
+                <input type="checkbox" bind:checked={opponentIsAI} />
+                AI
+            </label>
             <h2>Player 2</h2>
         </div>
     </div>
@@ -290,6 +294,15 @@
         height: 100vh;
         width: 100vw;
         overflow-x: hidden;
+    }
+
+    #enable-ai {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        color: white;
+        padding: 1em;
+        background-color: black;
     }
 
     #game button {

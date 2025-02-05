@@ -1,47 +1,54 @@
-# Svelte + Vite
+# **Anidoubt**
 
-This template should help get you started developing with Svelte in Vite.
+This project is a Svelte-based card game where a player and an AI or another player opponent arrange animal cards in descending order based on weight. The AI opponent is powered by OpenAI's GPT-4o model and follows game rules to evaluate the card stack, make moves, or doubt the stack's order.
 
-## Recommended IDE Setup
+---
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+## **Features**
+- **Dynamic Gameplay**:
+  - Players and the AI take turns placing cards in descending order based on a chosen property.
+  - The AI evaluates the stack's correctness before making its move.
+- **Penalty System**:
+  - If a player or AI doubts the stack incorrectly, penalty cards are drawn.
+  - Correct doubts penalize the opponent.
+- **Drag-and-Drop Interaction**:
+  - Uses `svelte-dnd-action` for intuitive drag-and-drop functionality.
 
-## Need an official Svelte framework?
+---
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+## **Setup Instructions**
 
-## Technical considerations
+### Prerequisites
+1. Node.js (v16 or higher)
+2. An OpenAI API key (if you want to use the AI features)
 
-**Why use this over SvelteKit?**
+### Installation
+1. Clone the repository:
+2. Run `npm install`
+3. create a config.js file in the src directory containing
+`export const OPEN_AI_API_KEY = "your-api-key";`
+Please note that this is highly risky and you should never share this file as your api-key could be stolen!
+4. Insert the animal images into /public/images/quartet-images
+5. Run `npm run dev`
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+## **How to Play**
 
-This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+### against an AI
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+0. Click the AI-checkbox next to player 2
+1. At the start of the game, players are dealt a set of cards with animals.
+2. The goal is to arrange cards in descending order based on weight.
+3. On each turn:
+- The player places a card into the stack using drag-and-drop.
+- The AI evaluates the current stack and decides whether to place a card or doubt its correctness.
+4. If the AI or player doubts incorrectly, penalty cards are drawn:
+- Correct doubt: Opponent draws 4 cards.
+- Incorrect doubt: Doubter draws 2 cards.
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+### against another Player
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+1. Leave the checkbox unchecked
+2. One player gets to play with the cards in the top and the player the cards in the bottom bar
 
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `checkJs` in the JS template?**
-
-It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/sveltejs/svelte-hmr/tree/master/packages/svelte-hmr#preservation-of-local-state).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```js
-// store.js
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
+## **Known Issues**
+- The AI may occasionally overthink simple scenarios at higher difficulty levels due to ambiguous instructions.
