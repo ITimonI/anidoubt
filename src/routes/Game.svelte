@@ -4,7 +4,7 @@
     import Card from "../components/Card.svelte";
     import CardStack from "../components/CardStack.svelte";
     import { fetchAnimalData } from "../assets/api/animalDataAPI.js";
-    import { sendMessage, testApi } from "../assets/api/openAI.js";
+    import { sendMessage, testApi, clearMessageQueue } from "../assets/api/openAI.js";
 
     let showProperty = false;
     let allCards = [...animalData];
@@ -14,6 +14,8 @@
     let dropCardStackRef;
     let opponentCards = [];
     let usedCards = [];
+    let currentAiMessage = "";
+    let gameWon = false;
 
     startGame();
 
@@ -72,6 +74,9 @@
         dropCards.length = 0; // This clears the dropCards array
         dropCards = [...dropCards]; // Reassign to trigger reactivity
 
+        // clear the message queue from the AI to use less tokens
+        clearMessageQueue();
+
         // hide the property of the cards
         showProperty = false;
     }
@@ -91,7 +96,7 @@
         switch (type) {
             case "player":
                 playerCards = items;
-
+                checkWin(playerCards, "player");
                 break;
             case "drop":
                 const newCard = items.find(
@@ -100,14 +105,28 @@
                 const newCardIndex = items.indexOf(newCard);
 
                 dropCards = items;
-                handlePlayerPlacedCard(newCard.name, newCardIndex);
+                if(!gameWon) handlePlayerPlacedCard(newCard.name, newCardIndex);
                 break;
             case "opponent":
                 opponentCards = items;
+                checkWin(opponentCards, "opponent");
                 break;
             default:
                 console.warn(`Unknown type: ${type}`);
         }
+    }
+
+    function checkWin(array, type){
+        if(array.length === 0){
+            console.log(`The ${type} has won!`);
+            gameWon = true;
+        }
+    }
+
+    function resetGame(){
+        gameWon = false;
+        clearMessageQueue();
+        startGame();
     }
 
     function handleStart() {
@@ -148,6 +167,8 @@
             console.log("the opponent wants to check the order");
             handleCheck("opponent");
         }
+
+        currentAiMessage = aiResponse.message;
     }
 
     function minifyCards(cards) {
@@ -162,11 +183,20 @@
     <button class="btn" id="btn-start" on:click={handlePlayerPlacedCard}>
         Play
     </button>
-    <button class="btn" id="btn-check" on:click={() => handleCheck("player")}>
-        Check
-    </button>
+    {#if !showProperty}
+        <button class="btn" id="btn-check" on:click={() => handleCheck("player")}>
+            Check
+        </button>
+    {/if}
+    
+    <div id="ai-messages">
+        <p>{currentAiMessage}</p>
+    </div>
     {#if showProperty}
         <button class="btn" id="btn-next" on:click={nextRound}>Next Round</button>
+    {/if}
+    {#if gameWon}
+        <button class="btn" id="btn-reset" on:click={resetGame}>Reset Game</button>
     {/if}
     <div id="game">
         <CardStack type={"player"} items={playerCards} {onUpdateCards} />
@@ -192,5 +222,15 @@
         background-color: #000000;
         padding: 1em;
         border-radius: 10px;
+    }
+
+    #ai-messages {
+        background-color: black;
+        padding: 1em;
+        min-width: 50vw;
+        max-width: 50vw;
+        margin: 1em;
+        border-radius: 1em;
+        min-height: 3em;
     }
 </style>

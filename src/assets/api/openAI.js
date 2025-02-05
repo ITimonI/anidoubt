@@ -16,16 +16,17 @@ messages.push(
         role: "system",
         content: `
         You are an AI playing a card game. Rules:
-        - Cards must be arranged in descending order by weight.
+        - Every turn you have to place one of your cards based on the animals assumed weight.
+        - Cards should be placed based by weight. The lower the array index the higher the weight.
         - The weight of each card is not provided. You need to guess it.
-        - The goal is to get rid of all your cards.
+        - The goal is to get rid of all your cards and check if the player may have mixed up the order.
         - Each turn consists of two steps:
-        1. Evaluate if the current stack is in descending order by ${JSON.stringify(property)}:
+        1. Evaluate if the current stack is order the right way around by ${JSON.stringify(property)} to set the "orderIsCorrect" boolean:
             - Consider only the current stack when evaluating its order.
             - If there’s only one card in the stack, it is always in descending order.
             - If the order is incorrect, set "orderIsCorrect" to false and explain why.
             - If the order is correct, set "orderIsCorrect" to true.
-        2. Make your move:
+        2. Make your move (This is mandatory. THe absolutely only case you should skip your turn is when "orderIsCorrect" is false):
             - If "orderIsCorrect" is true, you must place one of your cards into the correct position in the stack.
             - Placing a card in its correct position will not violate descending order.
             - Add a message explaining your move and why you chose that card.
@@ -34,6 +35,13 @@ messages.push(
         `
     }
 )
+
+/**
+ * clears all but the initial system message
+ */
+export function clearMessageQueue() {
+    messages = [messages[0]];
+}
 
 const openai = new OpenAI({
     apiKey: OPEN_AI_API_KEY,
