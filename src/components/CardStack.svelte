@@ -63,13 +63,20 @@
         align-items: center;
         gap: 1em;
         padding-top: 1em;
+        max-width: 50%;
+        overflow-x: scroll;
+        scrollbar-color: #848484 rgb(0,0,0,0);
+        
         height: 100%;
         border-radius: 1em;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        padding-left: 1em;
     }
 
     .stack-inactive{
         border: 1px solid #787878;
         pointer-events: none;
+        scrollbar-color: rgb(0,0,0,0) rgb(0,0,0,0);
     }
 
     .stack-active {

@@ -48,10 +48,10 @@
         allCards = shuffleArray([...animalData]);
 
         // Move four random cards from allCards to playerCards
-        playerCards = allCards.splice(0, 4);
+        playerCards = allCards.splice(0, 12);
 
         // Move another four random cards from allCards to opponentCards
-        opponentCards = allCards.splice(0, 4);
+        opponentCards = allCards.splice(0, 12);
     }
 
     function handleCheck(initiator) {
