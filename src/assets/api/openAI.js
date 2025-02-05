@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { OPEN_AI_API_KEY } from "../../config";
 
-let difficulty = "hard";
+let difficulty = "very";
 let property = "weight";
 
 let aiCards = [
@@ -16,17 +16,22 @@ messages.push(
         role: "system",
         content: `
         You are an AI playing a card game. Rules:
-        - Add animal cards descending by ${JSON.stringify(property)}
-        - Each turn, place one card in the correct position in the stack
-        - Your opponent also adds cards
-        - You can't change the order of the already placed cards
-        - If you doubt the order set orderIsCorrect to false, else true
-        - If correct, doubter draws 2 penalty cards
-        - If incorrect, opponent draws 4 penalty cards
-        - Add a message explaining your move.
-        - Difficulty on a scale from 1-10, 1: baby to 10: expert ${JSON.stringify(difficulty)}.
-        - Your cards: ${JSON.stringify(aiCards)}.
-        `,
+        - Cards must be arranged in descending order by weight.
+        - The weight of each card is not provided. You need to guess it.
+        - The goal is to get rid of all your cards.
+        - Each turn consists of two steps:
+        1. Evaluate if the current stack is in descending order by ${JSON.stringify(property)}:
+            - Consider only the current stack when evaluating its order.
+            - If there’s only one card in the stack, it is always in descending order.
+            - If the order is incorrect, set "orderIsCorrect" to false and explain why.
+            - If the order is correct, set "orderIsCorrect" to true.
+        2. Make your move:
+            - If "orderIsCorrect" is true, you must place one of your cards into the correct position in the stack.
+            - Placing a card in its correct position will not violate descending order.
+            - Add a message explaining your move and why you chose that card.
+            - You cannot skip your turn if "orderIsCorrect" is true.
+            - If "orderIsCorrect" is false, you may skip your move and explain why you are skipping.
+        `
     }
 )
 
@@ -55,7 +60,7 @@ export async function sendMessage(content) {
 
     try {
         const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gpt-4o",
             messages: messages,
             response_format: {
                 type: "json_schema",
@@ -66,36 +71,31 @@ export async function sendMessage(content) {
                         "type": "object",
                         "properties": {
                             "position": {
-                                "type": "integer",
-                                "description": "index where the card should be placed at"
+                                "type": ["integer", "null"],
+                                "description": "Index where the card should be placed (null if order is incorrect)"
                             },
                             "card": {
-                                "type": "object",
+                                "type": ["object", "null"],
                                 "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "description": "id of the card"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "description": "animal name"
-                                    }
+                                    "id": { "type": "integer", "description": "ID of the card" },
+                                    "name": { "type": "string", "description": "Animal name" }
                                 },
                                 "required": ["id", "name"],
                                 "additionalProperties": false
                             },
                             "message": {
                                 "type": "string",
-                                "description": "Commenting on your move."
+                                "description": "Commenting on your move or why you doubted"
                             },
                             "orderIsCorrect": {
                                 "type": "boolean",
-                                "description": "set this to false if you doubt the order"
+                                "description": "'false' if stack violates descending weight order"
                             }
                         },
                         "required": ["position", "card", "message", "orderIsCorrect"],
                         "additionalProperties": false
                     },
+
                 },
             },
         });

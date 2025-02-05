@@ -13,6 +13,7 @@
     let dropCards = []; // Initialize as empty
     let dropCardStackRef;
     let opponentCards = [];
+    let usedCards = [];
 
     startGame();
 
@@ -45,20 +46,57 @@
         opponentCards = allCards.splice(0, 4);
     }
 
-    function handleCheck() {
-        showProperty = !showProperty;
-        dropCardStackRef.checkOrder("max_weight");
+    function handleCheck(initiator) {
+        showProperty = true
+
+        let otherPlayer;
+        if (initiator === "player") {
+            otherPlayer = "opponent";
+        } else {
+            otherPlayer = "player";
+        }
+
+        const orderIsCorrect = dropCardStackRef.checkOrder("max_weight");
+        if (orderIsCorrect) {
+            // add four cards to the initiators hand
+            addCardsToHand(4, initiator);
+        } else {
+            // add two cards to the otherPlayers hand
+            addCardsToHand(2, otherPlayer);
+        }
+    }
+
+    function nextRound() {
+        // move all cards from the dropStack to usedCards
+        usedCards.push(...dropCards);
+        dropCards.length = 0; // This clears the dropCards array
+        dropCards = [...dropCards]; // Reassign to trigger reactivity
+
+        // hide the property of the cards
+        showProperty = false;
+    }
+
+    function addCardsToHand(amountOfCards, person) {
+        const cards = allCards.splice(0, amountOfCards);
+        if (person === "player") {
+            playerCards.push(...cards);
+            playerCards = [...playerCards]; // Reassign to trigger reactivity
+        } else {
+            opponentCards.push(...cards);
+            opponentCards = [...opponentCards]; // Reassign to trigger reactivity
+        }
     }
 
     function onUpdateCards(type, items) {
-
         switch (type) {
             case "player":
                 playerCards = items;
 
                 break;
             case "drop":
-                const newCard = items.find(item => !dropCards.some(card => card.id === item.id));
+                const newCard = items.find(
+                    (item) => !dropCards.some((card) => card.id === item.id),
+                );
                 const newCardIndex = items.indexOf(newCard);
 
                 dropCards = items;
@@ -81,24 +119,24 @@
     }
 
     async function handlePlayerPlacedCard(addedAnimal, addedCardIndex) {
-
-        const minifiedDropcards = dropCards.map(card => ({
+        const minifiedDropcards = dropCards.map((card) => ({
             id: card.id,
-            name: card.animalName
+            name: card.animalName,
         }));
 
         let aiResponse = JSON.parse(
             await sendMessage(`
-        The player made made a move and added ${JSON.stringify(addedAnimal)} at index ${JSON.stringify(addedCardIndex)} Where should your next card go?
-        - Is the order of the whole card array still correct? ${JSON.stringify(minifyCards(dropCards))}
-        - The cards available to you to play with are ${JSON.stringify(minifyCards(opponentCards))}
+        The player made a move and added ${JSON.stringify(addedAnimal)} at index ${JSON.stringify(addedCardIndex)}.
+        - Current stack on the table that the player placed a card in and you should take a look at: ${JSON.stringify(minifyCards(dropCards))}
+        - Your cards: ${JSON.stringify(minifyCards(opponentCards))}
         `),
         );
-
         // console.log(aiResponse);
-        if(aiResponse.orderIsCorrect){
+        if (aiResponse.orderIsCorrect) {
             // Move the card from the opponent's hand to the drop stack
-            const cardIndex = opponentCards.findIndex(card => card.id === aiResponse.card.id);
+            const cardIndex = opponentCards.findIndex(
+                (card) => card.id === aiResponse.card.id,
+            );
             if (cardIndex !== -1) {
                 const [card] = opponentCards.splice(cardIndex, 1);
                 opponentCards = [...opponentCards];
@@ -108,25 +146,28 @@
             }
         } else {
             console.log("the opponent wants to check the order");
-            handleCheck();
+            handleCheck("opponent");
         }
     }
 
     function minifyCards(cards) {
-        return cards.map(card => ({
+        return cards.map((card) => ({
             id: card.id,
             name: card.name,
         }));
     }
-
-
 </script>
 
 <div class="wrapper">
-    <button class="btn" id="btn-start" on:click={handlePlayerPlacedCard}
-        >Play</button
-    >
-    <button class="btn" id="btn-check" on:click={handleCheck}>Check</button>
+    <button class="btn" id="btn-start" on:click={handlePlayerPlacedCard}>
+        Play
+    </button>
+    <button class="btn" id="btn-check" on:click={() => handleCheck("player")}>
+        Check
+    </button>
+    {#if showProperty}
+        <button class="btn" id="btn-next" on:click={nextRound}>Next Round</button>
+    {/if}
     <div id="game">
         <CardStack type={"player"} items={playerCards} {onUpdateCards} />
         <CardStack
