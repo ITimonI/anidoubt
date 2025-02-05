@@ -327,6 +327,7 @@
     .game-area h2 {
         transform: rotate(270deg);
         font-size: 24px;
+        text-align: center;
     }
 
     .btn {
@@ -343,5 +344,29 @@
         margin: 1em;
         border-radius: 1em;
         min-height: 3em;
+    }
+
+    @media (max-width: 860px) {
+        .game-area {
+            flex-direction: column;
+        }
+
+        .game-area h2 {
+            transform: rotate(0deg);
+            font-size: 24px;
+        }
+
+        .wrapper{
+            overflow: auto;
+        }
+
+        #game {
+            width: 100%;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr;
+            grid-template-areas:
+                "player-area drop-area opponent-area"
+                "player-stack drop-stack opponent-stack";
+        }
     }
 </style>

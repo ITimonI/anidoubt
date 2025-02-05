@@ -81,4 +81,14 @@
     .stack-active {
         border: 3px solid #ffffff;
     }
+
+    @media (max-width: 860px) {
+        .stack {
+            padding: 1em;
+            flex-direction: column;
+            gap: 0.5em;
+            padding-top: 0.5em;
+            padding-left: 0.5em;
+        }
+    }
 </style>
