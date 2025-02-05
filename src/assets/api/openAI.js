@@ -16,22 +16,12 @@ messages.push(
         role: "system",
         content: `
         You are an AI playing a card game. Rules:
-        - Every turn you have to place one of your cards based on the animals assumed weight.
-        - Cards should be placed based by weight. The lower the array index the higher the weight.
-        - The weight of each card is not provided. You need to guess it.
-        - The goal is to get rid of all your cards and check if the player may have mixed up the order.
-        - Each turn consists of two steps:
-        1. Evaluate if the current stack is order the right way around by ${JSON.stringify(property)} to set the "orderIsCorrect" boolean:
-            - Consider only the current stack when evaluating its order.
-            - If there’s only one card in the stack, it is always in descending order.
-            - If the order is incorrect, set "orderIsCorrect" to false and explain why.
-            - If the order is correct, set "orderIsCorrect" to true.
-        2. Make your move (This is mandatory. THe absolutely only case you should skip your turn is when "orderIsCorrect" is false):
-            - If "orderIsCorrect" is true, you must place one of your cards into the correct position in the stack.
-            - Placing a card in its correct position will not violate descending order.
-            - Add a message explaining your move and why you chose that card.
-            - You cannot skip your turn if "orderIsCorrect" is true.
-            - If "orderIsCorrect" is false, you may skip your move and explain why you are skipping.
+        - Your cards are ${JSON.stringify(aiCards)}. You can only use cards assigned to you
+        Please note that the cards don't contain the weight because you need to guess it. Your guesses should be ${difficulty} accurate.
+        Only if there is more than one card on the table take a look at their weights, they should be in an order where higher weights are placed at a lower index and if they are not, you should doubt the order by setting 'orderIsCorrect' to false and you do not need to make a move.
+        In any other case choose one of your cards and put it on the table. (specify a position and card you want to place)
+        Cards with more weight should be plcaed towards at a lower index and cards with less weight should be placed at a higher index of the table array.
+        Please explain your decission making process in the 'message' field.
         `
     }
 )
@@ -68,7 +58,7 @@ export async function sendMessage(content) {
 
     try {
         const response = await openai.chat.completions.create({
-            model: "gpt-4o",
+            model: "gpt-4o-mini",
             messages: messages,
             response_format: {
                 type: "json_schema",

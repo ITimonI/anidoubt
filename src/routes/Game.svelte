@@ -172,6 +172,7 @@
         - Your cards: ${JSON.stringify(minifyCards(opponentCards))}
         `),
         );
+
         // console.log(aiResponse);
         if (aiResponse.orderIsCorrect) {
             // Move the card from the opponent's hand to the drop stack
@@ -185,6 +186,8 @@
                 dropCards.splice(aiResponse.position, 0, card);
                 dropCards = [...dropCards];
             }
+
+            currentTurn = "player";
         } else {
             console.log("the opponent wants to check the order");
             handleCheck("opponent");
@@ -362,6 +365,7 @@
         margin: 1em;
         border-radius: 1em;
         min-height: 3em;
+        height: fit-content;
     }
 
     @media (max-width: 860px) {

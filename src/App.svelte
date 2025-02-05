@@ -21,7 +21,7 @@
   </main>
   <footer>
     <p>Anistack</p>
-    <a href="#imprint">Impressum</a>
+    <a href="#imprint">Imprint</a>
   </footer>
 </div>
 

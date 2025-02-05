@@ -52,3 +52,4 @@ Please note that this is highly risky and you should never share this file as yo
 
 ## **Known Issues**
 - The AI may occasionally overthink simple scenarios at higher difficulty levels due to ambiguous instructions.
+- Unfortunately the AI integration isn't working reliably yet and may run into errors form time to time
