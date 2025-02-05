@@ -10,7 +10,11 @@
     <div class="card-header">
         <div class="card-number {groupClass}">{animalTag}</div>
         <div class="card-title">
-            <p class="card-title-text">{animal.name}</p>
+            {#if showProperty}
+                <p class="card-title-text">{animal.max_weight}</p>
+            {:else}
+                <p class="card-title-text">{animal.name}</p>
+            {/if}
         </div>
     </div>
     <img
@@ -18,12 +22,6 @@
         src="images/quartet-images/{animalTag}.jpg"
         alt=""
     />
-
-    {#if showProperty}
-        <p class="card-title-text">{animal.max_weight}</p>
-    {:else}
-        <!-- <div class="card-trivia">{animal.trivia_german}</div> -->
-    {/if}
 </div>
 
 <style>
