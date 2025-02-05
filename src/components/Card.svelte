@@ -103,4 +103,40 @@
         padding-left: 0.5rem;
         font-size: 1.2rem;
     }
+
+    .group-a {
+        background-color: rgb(128, 153, 94); /* HSL(87°, 30%, 48%) */
+    }
+
+    .group-b {
+        background-color: rgb(94, 153, 150); /* HSL(177°, 30%, 48%) */
+    }
+
+    .group-c {
+        background-color: rgb(101, 94, 153); /* HSL(245°, 30%, 48%) */
+    }
+
+    .group-d {
+        background-color: rgb(153, 94, 128); /* HSL(327°, 30%, 48%) */
+    }
+
+    .group-e {
+        background-color: rgb(
+            94,
+            109,
+            153
+        ); /* HSL(227°, 30%, 48%) */ /* Adjusted to avoid brownish tone */
+    }
+
+    .group-f {
+        background-color: rgb(94, 128, 153); /* HSL(207°, 30%, 48%) */
+    }
+
+    .group-g {
+        background-color: rgb(128, 94, 153); /* HSL(267°, 30%, 48%) */
+    }
+
+    .group-h {
+        background-color: rgb(153, 94, 101); /* HSL(357°, 30%, 48%) */
+    }
 </style>

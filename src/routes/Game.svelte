@@ -48,10 +48,10 @@
         allCards = shuffleArray([...animalData]);
 
         // Move four random cards from allCards to playerCards
-        playerCards = allCards.splice(0, 12);
+        playerCards = allCards.splice(0, 4);
 
         // Move another four random cards from allCards to opponentCards
-        opponentCards = allCards.splice(0, 12);
+        opponentCards = allCards.splice(0, 4);
     }
 
     function handleCheck(initiator) {
@@ -144,6 +144,11 @@
         gameWon = false;
         clearMessageQueue();
         startGame();
+
+        // fill used cards and clear dropcards
+        usedCards.push(...dropCards);
+        dropCards.length = 0;
+        dropCards = [...dropCards];
     }
 
     function handleStart() {
@@ -233,7 +238,7 @@
             <h2>Player 1</h2>
         </div>
         <div class="game-area" id="drop-area">
-            {#if !showProperty}
+            {#if !showProperty && !gameWon}
                 <button
                     class="btn"
                     id="btn-check"
@@ -244,7 +249,7 @@
             {/if}
             {#if showProperty}
                 <button class="btn" id="btn-next" on:click={nextRound}
-                    >Next Round</button
+                    >Continue</button
                 >
             {/if}
             {#if gameWon}
